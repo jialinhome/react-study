@@ -10,7 +10,7 @@ const appState = {
     }
 };
 
-function dispatch (action) {
+function stateChanger (action) {
     switch (action.type) {
         case 'UPDATE_TITLE_TEXT':
             appState.title.text = action.text;
@@ -40,9 +40,21 @@ function renderContent (content) {
     contentDOM.style.color = content.color;
 }
 
-renderApp(appState);
+function createStore (state, stateChager) {
+    const listeners = [];
+    const subscribe = (listener) => listeners.push(listener);
+    const getState = () => state;
+    const dispatch = (action) => {
+        stateChager(state, action);
+        listeners.forEach((listener) => listener());
+    };
+    return { getState, dispatch, subscribe };
+}
 
-dispatch({type: 'UPDATE_TITLE_TEXT', text: 'hello world'});
-dispatch({type: 'UPDATE_TITLE_COLOR', color: 'blue'});
+const store = createStore(appState, stateChanger);
+store.subscribe(() => renderApp(store.getState()));
 
-renderApp(appState);
+renderApp(appState); // 首次页面渲染
+
+store.dispatch({type: 'UPDATE_TITLE_TEXT', text: 'hello world'});
+store.dispatch({type: 'UPDATE_TITLE_COLOR', color: 'blue'});
