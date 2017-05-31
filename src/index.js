@@ -10,6 +10,19 @@ const appState = {
     }
 };
 
+function dispatch (action) {
+    switch (action.type) {
+        case 'UPDATE_TITLE_TEXT':
+            appState.title.text = action.text;
+            break;
+        case 'UPDATE_TITLE_CLOLR':
+            appState.title.color = action.color;
+            break;
+        default:
+            break;
+    }
+}
+
 function renderApp (appState) {
     renderTitle(appState.title);
     renderContent(appState.content);
@@ -26,5 +39,10 @@ function renderContent (content) {
     contentDOM.innerHTML = content.text;
     contentDOM.style.color = content.color;
 }
+
+renderApp(appState);
+
+dispatch({type: 'UPDATE_TITLE_TEXT', text: 'hello world'});
+dispatch({type: 'UPDATE_TITLE_COLOR', color: 'blue'});
 
 renderApp(appState);
